@@ -2,19 +2,27 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+// Configure middleware to parse JSON requests
 app.use(bodyParser.json());
 
+// Define the route for the exponentiation calculation
 app.post('/', (req, res) => {
-  const num1 = req.body.num1;
-  if (num1 === undefined || num1 === null || isNaN(num1)) {
-    res.status(400).send('Invalid request payload');
+  // Check that the request has the correct format
+  if (!req.body || !req.body.num1) {
+    return res.status(400).send('Invalid request');
+  }
+
+  // Get the number from the request payload
+  const num1 = parseInt(req.body.num1);
+
+  // Check whether the number is even or odd
+  if (num1 % 2 === 0) {
+    res.status(200).send(`The number ${num1} is even`);
   } else {
-    if (num1 % 2 === 0) {
-      res.status(200).send('The number is even');
-    } else {
-      res.status(404).send('The number is odd');
-    }
+    res.status(404).send(`The number ${num1} is odd`);
   }
 });
 
-app.listen(3000, () => console.log('Server started on port 3000'));
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port ${port}...`));
