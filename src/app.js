@@ -1,23 +1,19 @@
-const http = require('http');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
 
-const server = http.createServer((req, res) => {
-  if (req.method === 'POST') {
-    const chunks = [];
+app.use(bodyParser.json());
 
-    req.on('data', chunk => {
-      const buf = Buffer.from(chunk);
-      const str = buf.toString();
-      chunks.push(str);
-      const obj = JSON.parse(chunks)
-      const value = obj.num1;
-    
-     // Write the code here to check if the number is odd or even
-
-   });
+app.post('/', (req, res) => {
+  const num1 = req.body.num1;
+  if (num1 === undefined || num1 === null || isNaN(num1)) {
+    res.status(400).send('Invalid request payload');
+  } else {
+    if (num1 % 2 === 0) {
+      res.status(200).send('The number is even');
+    } else {
+      res.status(404).send('The number is odd');
+    }
   }
-
-  
 });
-
-
 module.exports = server;
